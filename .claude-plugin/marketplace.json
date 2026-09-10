@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ai-tools",
+  "owner": {
+    "name": "Avraham Aizenbud"
+  },
+  "metadata": {
+    "description": "Marketplace exposing the AI_TOOLS skills as a single Claude Code plugin.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "ai-tools",
+      "source": "./",
+      "description": "Skills for working on mathematical papers in LaTeX: auditing proofs, repairing display formulas, marking notation for an index, and writing math that renders in chat."
+    }
+  ]
+}
