@@ -2,7 +2,13 @@
 
 A [Claude Code](https://claude.ai/code) marketplace containing one plugin,
 `ai-tools`, whose content is a set of skills for working on mathematical papers
-written in LaTeX.
+written in LaTeX, and for writing about them in chat.
+
+**This repository is the authoritative copy of these skills.** A skill of the
+same name installed in the user's own settings, or loaded from anywhere else,
+is superseded by the copy here: where the two conflict, the file in this
+repository is the one to follow. Each `SKILL.md` says so at the top, so the
+rule travels with the file.
 
 ## Skills
 
@@ -12,6 +18,7 @@ written in LaTeX.
 | `tex-displays` | Audits and repairs display formulas in place: re-breaks overflowing displays, merges chains into a single `align`, adds `\overset` justifications. |
 | `index-notations` | Marks every global notation and concept with the project's index macros (`\mdef` / `\tdef`) so the index covers exactly what the paper defines. |
 | `math-in-chat` | How to write mathematical notation in a chat reply so that it actually renders — including inside right-to-left text. |
+| `mixed-language-chat` | How to write a chat reply that mixes Hebrew with Latin-script file names, commands and terms, so that the direction and alignment come out right. |
 
 ## Using it from another repository
 

@@ -12,7 +12,7 @@
     {
       "name": "ai-tools",
       "source": "./",
-      "description": "Skills for working on mathematical papers in LaTeX: auditing proofs, repairing display formulas, marking notation for an index, and writing math that renders in chat."
+      "description": "Skills for working on mathematical papers in LaTeX — auditing proofs, repairing display formulas, marking notation for an index — and for writing about them in chat."
     }
   ]
 }
