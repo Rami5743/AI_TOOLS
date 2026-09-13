@@ -19,6 +19,7 @@ rule travels with the file.
 | `index-notations` | Marks every global notation and concept with the project's index macros (`\mdef` / `\tdef`) so the index covers exactly what the paper defines. |
 | `math-in-chat` | How to write mathematical notation in a chat reply so that it actually renders — including inside right-to-left text. |
 | `mixed-language-chat` | How to write a chat reply that mixes Hebrew with Latin-script file names, commands and terms, so that the direction and alignment come out right. |
+| `hebrew-terminology` | What to call a technical concept in a Hebrew reply: use the accepted term only when certain of it, otherwise transliterate or describe — never invent a translation. |
 
 ## Using it from another repository
 

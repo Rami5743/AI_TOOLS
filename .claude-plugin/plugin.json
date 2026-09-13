@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "ai-tools",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Skills for working on mathematical papers in LaTeX — auditing proofs, repairing display formulas, marking notation for an index — and for writing about them in chat.",
   "author": {
     "name": "Avraham Aizenbud"
