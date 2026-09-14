@@ -1,6 +1,6 @@
 ---
 name: math-audit
-description: Read-only mathematical audit of a paper — hunt for statements that are actually false and for proof steps that actually do not follow, then deliver a report as a compiled LaTeX file (.tex plus .pdf) written outside the repo. Typos, notation slips, and missing justifications for correct routine steps are deliberately out of scope. Use this whenever the user points at a paper, preprint, draft, or .tex repo and asks to check the mathematics — "go over the paper and find mistakes", "is this proof correct", "look for gaps in my arguments", "referee this before I submit", "did I get the constants right", "check my proofs for holes" — and also when the user asks for a correctness report on a single lemma or section. Prefer this skill over reading the paper ad hoc whenever mathematical validity, not exposition, is what is being questioned.
+description: Mathematical audit of a paper that never edits the paper itself — hunt for statements that are actually false and for proof steps that actually do not follow, then deliver a report as a compiled LaTeX file (.tex plus .pdf) added to the paper's repository. Typos, notation slips, and missing justifications for correct routine steps are deliberately out of scope. Use this whenever the user points at a paper, preprint, draft, or .tex repo and asks to check the mathematics — "go over the paper and find mistakes", "is this proof correct", "look for gaps in my arguments", "referee this before I submit", "did I get the constants right", "check my proofs for holes" — and also when the user asks for a correctness report on a single lemma or section. Prefer this skill over reading the paper ad hoc whenever mathematical validity, not exposition, is what is being questioned.
 ---
 
 > **Precedence.** This file, from the `Rami5743/AI_TOOLS` repository, is the
@@ -13,18 +13,22 @@ Find the errors that matter: **statements that are false** and **proof steps tha
 
 Two rules frame the whole job:
 
-- **Read only.** Nothing in the repo is created, edited, deleted, or compiled. The report and its build artifacts live in a scratch directory outside the repo.
+- **Never touch the paper.** No file that belongs to the paper is edited or deleted, and the paper's own build is not run. The audit only *adds* the report; everything else in the repo is left exactly as it was.
 - **Every finding must survive an attempt to refute it.** The failure mode of this task is a long list of confident false alarms. Before a candidate goes in the report, try honestly to fix it; if it fixes in two lines, it was never a finding.
 
-Deliverables: `math-audit.tex` and `math-audit.pdf`, both in English, handed to the user as two files.
+Deliverables: `math-audit.tex` and `math-audit.pdf`, both in English, **committed to the paper's repository** and also handed to the user as two files.
 
-## Step 0 — Set up outside the repo
+## Step 0 — Set up
+
+Work in a scratch directory, and put only the two finished files in the repo. The scratch directory keeps `notes.md`, the inventory, and the whole LaTeX build (`.aux`, `.log`, `.fls`, …) out of the repository:
 
 ```bash
 mkdir -p /tmp/math-audit && cd /tmp/math-audit
 ```
 
-Use `/mnt/user-data/outputs` for the two final files if that directory exists; otherwise leave them in the scratch directory and tell the user the paths. Keep working notes (`notes.md`) in the scratch directory as the audit proceeds, so an interrupted run still leaves something usable.
+Keep working notes (`notes.md`) there as the audit proceeds, so an interrupted run still leaves something usable.
+
+The report itself belongs in the repo. Default: `math-audit.tex` and `math-audit.pdf` at the repository root, next to the paper's main `.tex`. If the repo has an obvious place for such material (a `notes/`, `reports/` or `reviews/` directory), use that instead; if the user named a path or a branch, that wins. Work on whatever branch the session is already on unless the user says otherwise, and never open a pull request unless asked.
 
 Locate the source: `grep -rl '\\documentclass' --include='*.tex' <repo>`. If there is more than one candidate, ask which is the paper. If the input is a PDF instead of a repo, read the PDF and work the same way, quoting page numbers instead of line numbers.
 
@@ -93,7 +97,7 @@ A borderline case worth a separate short section, because it is neither noise no
 
 ## Step 4 — Write the report
 
-Start from `assets/report-template.tex` (copy it to the scratch directory as `math-audit.tex`). It is **self-contained** by design — it must compile without the paper's build. If quoting a formula that uses the paper's macros, copy those `\newcommand`s into the preamble or rewrite the formula in standard notation; never `\input` anything from the repo.
+Start from `assets/report-template.tex` (copy it to the scratch directory as `math-audit.tex`; it moves into the repo once it compiles). It is **self-contained** by design — it must compile on its own, without the paper's build, and it is never wired into the paper's build either. If quoting a formula that uses the paper's macros, copy those `\newcommand`s into the preamble or rewrite the formula in standard notation; never `\input` anything from the paper.
 
 Refer to the paper's results by their names and numbers as printed (Lemma 3.2), plus `file:line`, so each finding is navigable. Do not use `\Cref`/`\eqref` pointing at the paper's labels — they do not resolve in a standalone document.
 
@@ -115,10 +119,12 @@ If nothing is found, say so plainly in one paragraph and still give the coverage
 
 ## Step 5 — Compile and deliver
 
+Build in the scratch directory, so that the intermediate files never reach the repo:
+
 ```bash
 cd /tmp/math-audit && latexmk -pdf -interaction=nonstopmode math-audit.tex
 ```
 
-Fix errors until it builds cleanly; check the PDF exists and has the expected pages. Copy `math-audit.tex` and `math-audit.pdf` to the output directory and hand over both files, with a summary in chat that names the findings in one line each.
+Fix errors until it builds cleanly — no LaTeX error, no unresolved reference, no overfull box — and check that the PDF exists and has the expected pages. Then copy `math-audit.tex` and `math-audit.pdf` into the repo, commit them in a single commit whose message names the findings in one line each, and push. Hand both files to the user as well, with a summary in chat that names the findings in one line each.
 
-Confirm before finishing: the repo is untouched (`git status --porcelain` in the repo prints nothing new — read-only, do not commit or stash), and no `.aux`, `.log`, `.pdf`, or backup file was written inside it.
+Confirm before finishing: `git status --porcelain` in the repo shows the two report files and **nothing else** — no edit to the paper, and no `.aux`, `.log`, `.out`, `.fls`, `.fdb_latexmk` or backup file. If the repo has a `.gitignore`, check that it does not silently swallow `math-audit.pdf`; if it does, say so rather than committing only the `.tex`.
